@@ -1,148 +1,148 @@
 <html>
-	<head>
-		<title>LeapDrawing</title>
-		<style>
-			body { margin: 0; }
-			canvas { width: 100%; height: 100% }
-		</style>
-		<script src="three.min.js"></script>
-		<script src="leap-0.6.3.js"></script>
-		<script src="leap-plugins-0.1.9.js"></script>
-	</head>
-	<body>
-		<div id=output></div>
-		<script type="application/x-glsl" id="sky-vertex">
-			varying vec2 vUV;
+    <head>
+        <title>LeapDrawing</title>
+        <style>
+            body { margin: 0; }
+            canvas { width: 100%; height: 100% }
+        </style>
+        <script src="three.min.js"></script>
+        <script src="leap-0.6.3.js"></script>
+        <script src="leap-plugins-0.1.9.js"></script>
+    </head>
+    <body>
+        <div id=output></div>
+        <script type="application/x-glsl" id="sky-vertex">
+            varying vec2 vUV;
 
-			void main() {
-			  vUV = uv;
-			  vec4 pos = vec4(position, 1.0);
-			  gl_Position = projectionMatrix * modelViewMatrix * pos;
-			}
-		</script>
+            void main() {
+              vUV = uv;
+              vec4 pos = vec4(position, 1.0);
+              gl_Position = projectionMatrix * modelViewMatrix * pos;
+            }
+        </script>
 
-		<script type="application/x-glsl" id="sky-fragment">
-			uniform sampler2D texture;
-			varying vec2 vUV;
+        <script type="application/x-glsl" id="sky-fragment">
+            uniform sampler2D texture;
+            varying vec2 vUV;
 
-			void main() {
-			  vec4 sample = texture2D(texture, vUV);
-			  gl_FragColor = vec4(sample.xyz, sample.w);
-			}
-		</script>
-		<script>
-			function Skydome(texture)
-			{
-				var geometry = new THREE.SphereGeometry(500, 64, 64);
-				var uniforms = { texture: { type: 't', value: texture } };
+            void main() {
+              vec4 sample = texture2D(texture, vUV);
+              gl_FragColor = vec4(sample.xyz, sample.w);
+            }
+        </script>
+        <script>
+            function Skydome(texture)
+            {
+                var geometry = new THREE.SphereGeometry(500, 64, 64);
+                var uniforms = { texture: { type: 't', value: texture } };
 
-				var material = new THREE.ShaderMaterial( {
-				  uniforms:       uniforms,
-				  vertexShader:   document.getElementById('sky-vertex').textContent,
-				  fragmentShader: document.getElementById('sky-fragment').textContent
-				});
+                var material = new THREE.ShaderMaterial( {
+                  uniforms:       uniforms,
+                  vertexShader:   document.getElementById('sky-vertex').textContent,
+                  fragmentShader: document.getElementById('sky-fragment').textContent
+                });
 
-				skydome = new THREE.Mesh(geometry, material);
-				skydome.scale.set(-1, 1, 1);
-				skydome.rotation.order = 'XZY';
-				skydome.renderDepth = 1000.0;
-				return skydome;
-			}
-			
-			function InputManager(element)
-			{
-				var data = [];
-				var keydown = function(event)
-				{
-					data[event.keyCode] = true;
-				}
-				var keyup = function(event)
-				{
-					data[event.keyCode] = false;
-				}
-				this.isKeyDown = function(keyCode)
-				{
-					return data[keyCode];
-				}
-				element.addEventListener("keydown", keydown);
-				element.addEventListener("keyup", keyup);
-			}
-			
-			var renderer = new THREE.WebGLRenderer({antialiasing: true});
-			renderer.setSize(window.innerWidth, window.innerHeight);
-			document.body.appendChild(renderer.domElement);
-			window.input = new InputManager(document);
-			
-			
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-			skydome = new Skydome(THREE.ImageUtils.loadTexture('skydome.jpg'));
-			scene.add(skydome);
+                skydome = new THREE.Mesh(geometry, material);
+                skydome.scale.set(-1, 1, 1);
+                skydome.rotation.order = 'XZY';
+                skydome.renderDepth = 1000.0;
+                return skydome;
+            }
+            
+            function InputManager(element)
+            {
+                var data = [];
+                var keydown = function(event)
+                {
+                    data[event.keyCode] = true;
+                }
+                var keyup = function(event)
+                {
+                    data[event.keyCode] = false;
+                }
+                this.isKeyDown = function(keyCode)
+                {
+                    return data[keyCode];
+                }
+                element.addEventListener("keydown", keydown);
+                element.addEventListener("keyup", keyup);
+            }
+            
+            var renderer = new THREE.WebGLRenderer({antialiasing: true});
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            window.input = new InputManager(document);
+            
+            
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            skydome = new Skydome(THREE.ImageUtils.loadTexture('skydome.jpg'));
+            scene.add(skydome);
 
-			var material = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
-			var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
-			scene.add(cursor);
+            var material = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
+            var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
+            scene.add(cursor);
 
-			camera.position.z += 10;
-			camera.position.y += 5;
-			
-			var gridHelper = new THREE.GridHelper(10, 0.5);		
-			scene.add(gridHelper);
-			
-			var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 1, 0xFFFF00);
-			scene.add(yArrow);
-			
-			var virtualCursor = {x : 0, y : 0, z : 0};
-			
-			var render = function()
-			{
-				requestAnimationFrame(render);
-				
-				speed = 0.1;
-				if(input.isKeyDown(38)) // Up
-					virtualCursor.z -= speed;
-				if(input.isKeyDown(40)) // Down
-					virtualCursor.z += speed;
-				if(input.isKeyDown(37)) // Left
-					virtualCursor.x -= speed;
-				if(input.isKeyDown(39)) // Right
-					virtualCursor.x += speed;
-				if(input.isKeyDown(96)) // 1
-					virtualCursor.y -= speed;
-				if(input.isKeyDown(97)) // 0
-					virtualCursor.y += speed;
-					
-				var finger = virtualCursor;
-		
-				cursor.position.set(finger.x, finger.y, finger.z);
+            camera.position.z += 10;
+            camera.position.y += 5;
+            
+            var gridHelper = new THREE.GridHelper(10, 0.5);     
+            scene.add(gridHelper);
+            
+            var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 1, 0xFFFF00);
+            scene.add(yArrow);
+            
+            var virtualCursor = {x : 0, y : 0, z : 0};
+            
+            var render = function()
+            {
+                requestAnimationFrame(render);
+                
+                speed = 0.1;
+                if(input.isKeyDown(38)) // Up
+                    virtualCursor.z -= speed;
+                if(input.isKeyDown(40)) // Down
+                    virtualCursor.z += speed;
+                if(input.isKeyDown(37)) // Left
+                    virtualCursor.x -= speed;
+                if(input.isKeyDown(39)) // Right
+                    virtualCursor.x += speed;
+                if(input.isKeyDown(96)) // 1
+                    virtualCursor.y -= speed;
+                if(input.isKeyDown(97)) // 0
+                    virtualCursor.y += speed;
+                    
+                var finger = virtualCursor;
+        
+                cursor.position.set(finger.x, finger.y, finger.z);
 
-				yArrow.position.set(finger.x, 0, finger.z);
+                yArrow.position.set(finger.x, 0, finger.z);
 
-				if(window.input.isKeyDown(65) && frame.id % 5 == 0)
-				{
-					var material = new THREE.MeshBasicMaterial({color : 0xFF0000, transparent : true, opacity : 1});
-					var newCube = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
-					scene.add(newCube);
-					newCube.position.set(finger.x, finger.y, finger.z);
-					newCube.updateMatrix();
-				}
-					
-				skydome.rotateY(0.001);
-				renderer.render(scene, camera);
-			};
-			
-			var output = document.getElementById('output');
-			Leap.loop(function(frame)
-			{
-				if(frame.hands.length > 0)
-				{
-					var indexPosition = frame.hands[0].indexFinger.tipPosition;
-					var finger = {x:indexPosition[0]/25, y:indexPosition[1]/50, z:indexPosition[2]/25};
-					window.virtualCursor = finger;
-				}
-			});
+                if(window.input.isKeyDown(65) && frame.id % 5 == 0)
+                {
+                    var material = new THREE.MeshBasicMaterial({color : 0xFF0000, transparent : true, opacity : 1});
+                    var newCube = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
+                    scene.add(newCube);
+                    newCube.position.set(finger.x, finger.y, finger.z);
+                    newCube.updateMatrix();
+                }
+                    
+                skydome.rotateY(0.001);
+                renderer.render(scene, camera);
+            };
+            
+            var output = document.getElementById('output');
+            Leap.loop(function(frame)
+            {
+                if(frame.hands.length > 0)
+                {
+                    var indexPosition = frame.hands[0].indexFinger.tipPosition;
+                    var finger = {x:indexPosition[0]/25, y:indexPosition[1]/50, z:indexPosition[2]/25};
+                    window.virtualCursor = finger;
+                }
+            });
 
-			render();
-		</script>
-	</body>
+            render();
+        </script>
+    </body>
 </html>     
