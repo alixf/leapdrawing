@@ -118,7 +118,7 @@
 
                 yArrow.position.set(finger.x, 0, finger.z);
 
-                if(window.input.isKeyDown(65) && frame.id % 5 == 0)
+                if(input.isKeyDown(65) && frame.id % 5 == 0)
                 {
                     var material = new THREE.MeshBasicMaterial({color : 0xFF0000, transparent : true, opacity : 1});
                     var newCube = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
