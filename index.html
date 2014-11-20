@@ -92,9 +92,41 @@
 			var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 1, 0xFFFF00);
 			scene.add(yArrow);
 			
+			var virtualCursor = {x : 0, y : 0, z : 0};
+			
 			var render = function()
 			{
 				requestAnimationFrame(render);
+				
+				speed = 0.1;
+				if(input.isKeyDown(38)) // Up
+					virtualCursor.z -= speed;
+				if(input.isKeyDown(40)) // Down
+					virtualCursor.z += speed;
+				if(input.isKeyDown(37)) // Left
+					virtualCursor.x -= speed;
+				if(input.isKeyDown(39)) // Right
+					virtualCursor.x += speed;
+				if(input.isKeyDown(96)) // 1
+					virtualCursor.y -= speed;
+				if(input.isKeyDown(97)) // 0
+					virtualCursor.y += speed;
+					
+				var finger = virtualCursor;
+		
+				cursor.position.set(finger.x, finger.y, finger.z);
+
+				yArrow.position.set(finger.x, 0, finger.z);
+
+				if(window.input.isKeyDown(65) && frame.id % 5 == 0)
+				{
+					var material = new THREE.MeshBasicMaterial({color : 0xFF0000, transparent : true, opacity : 1});
+					var newCube = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
+					scene.add(newCube);
+					newCube.position.set(finger.x, finger.y, finger.z);
+					newCube.updateMatrix();
+				}
+					
 				skydome.rotateY(0.001);
 				renderer.render(scene, camera);
 			};
@@ -105,20 +137,8 @@
 				if(frame.hands.length > 0)
 				{
 					var indexPosition = frame.hands[0].indexFinger.tipPosition;
-					var finger = {x:indexPosition[0]/50*2, y:indexPosition[1]/50, z:indexPosition[2]/50*2};
-					
-					cursor.position.set(finger.x, finger.y, finger.z);
-					
-					yArrow.position.set(finger.x, 0, finger.z);
-					
-					if(window.input.isKeyDown(65))
-					{
-						var material = new THREE.MeshBasicMaterial({color : 0xFF0000, transparent : true, opacity : 0.5});
-						var newCube = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
-						scene.add(newCube);
-						newCube.position.set(finger.x, finger.y, finger.z);
-						newCube.updateMatrix();
-					}
+					var finger = {x:indexPosition[0]/25, y:indexPosition[1]/50, z:indexPosition[2]/25};
+					window.virtualCursor = finger;
 				}
 			});
 
