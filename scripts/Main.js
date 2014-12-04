@@ -20,7 +20,7 @@ window.onload = function()
     camera.position.z += 10;
     camera.position.y += 5;
 
-    var gridHelper = new THREE.GridHelper(10, 0.5);     
+    var gridHelper = new THREE.GridHelper(10, 0.5);
     scene.add(gridHelper);
     scene.add(new THREE.AxisHelper(1.5));
 
@@ -28,15 +28,16 @@ window.onload = function()
     scene.add(yArrow);
     
     // Light setup
-    var directionalLight = new THREE.DirectionalLight(0xAAAAAA, 0.5); directionalLight.position.set(0, 1, 0); scene.add(directionalLight);
-    var directionalLight2 = new THREE.DirectionalLight(0x777777, 0.5); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
-    var directionalLight3 = new THREE.DirectionalLight(0x555555, 0.5); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
-    var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
+    var PointLight = new THREE.PointLight(0xAAAAAA, 1.0, 10); PointLight.position.set(0, 1, 0); scene.add(PointLight);
+    //var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
+    //var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
+    //var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
 
     fingerPosition = {x : 0, y : 0, z : 0};
     
     var cloneTool = new CloneTool(scene);
     var cameraTool = new CameraTool(camera);
+    var lightTool = new LightTool(scene, PointLight);
 
     var render = function()
     {
@@ -61,6 +62,8 @@ window.onload = function()
 
         cloneTool.update(input.isKeyDown("A".charCodeAt(0)), fingerPosition);
         cameraTool.update(input.isKeyDown("C".charCodeAt(0)), fingerPosition);
+        lightTool.update(input.isKeyDown("L".charCodeAt(0)), fingerPosition);
+
 
         renderer.render(scene, camera);
     };
