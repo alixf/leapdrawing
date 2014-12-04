@@ -38,6 +38,11 @@ window.onload = function()
     var cloneTool = new CloneTool(scene);
     var cameraTool = new CameraTool(camera);
 
+    var colorPlane = new ColorPlane();
+    scene.add(colorPlane);
+    var colorTool = new ColorTool(scene, colorPlane);
+    
+
     var render = function()
     {
         requestAnimationFrame(render);
@@ -61,6 +66,7 @@ window.onload = function()
 
         cloneTool.update(input.isKeyDown("A".charCodeAt(0)), fingerPosition);
         cameraTool.update(input.isKeyDown("C".charCodeAt(0)), fingerPosition);
+        colorTool.update(input.isKeyDown("P".charCodeAt(0)), fingerPosition);
 
         renderer.render(scene, camera);
     };
