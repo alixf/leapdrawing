@@ -27,13 +27,16 @@ window.onload = function()
     var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 1, 0xFFFF00);
     scene.add(yArrow);
     
+    // Light setup
     var directionalLight = new THREE.DirectionalLight(0xAAAAAA, 0.5); directionalLight.position.set(0, 1, 0); scene.add(directionalLight);
     var directionalLight2 = new THREE.DirectionalLight(0x777777, 0.5); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
     var directionalLight3 = new THREE.DirectionalLight(0x555555, 0.5); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
-    var light = new THREE.AmbientLight( 0x333333 ); // soft white light
-    scene.add(light);
+    var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
 
     fingerPosition = {x : 0, y : 0, z : 0};
+    
+    var cloneTool = new CloneTool(scene);
+    var cameraTool = new CameraTool(camera);
 
     var render = function()
     {
@@ -56,18 +59,8 @@ window.onload = function()
         cursor.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
         yArrow.position.set(fingerPosition.x, 0, fingerPosition.z);
 
-        if(input.isKeyDown(65))
-        {
-            var newCube = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), new THREE.MeshLambertMaterial({color : 0x00ff00}));
-            newCube.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
-            newCube.updateMatrix();
-            scene.add(newCube);
-        }
-        if(input.isKeyDown(67)) // Camera
-        {
-            camera.position.set(fingerPosition.x*3, fingerPosition.y*2, fingerPosition.z*2);
-            camera.lookAt(new THREE.Vector3(0,0,0));
-        }
+        cloneTool.update(input.isKeyDown("A".charCodeAt(0)), fingerPosition);
+        cameraTool.update(input.isKeyDown("C".charCodeAt(0)), fingerPosition);
 
         renderer.render(scene, camera);
     };
