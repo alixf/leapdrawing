@@ -1,12 +1,17 @@
 window.Skydome = function(texture)
 {
+    function getFileContent(url)
+    {
+        return $.ajax({type: "GET",  url: url, async: false}).responseText;
+    }
+    
     var geometry = new THREE.SphereGeometry(500, 64, 64);
     var uniforms = { texture: { type: 't', value: texture } };
 
     var material = new THREE.ShaderMaterial( {
       uniforms:       uniforms,
-      vertexShader:   document.getElementById('sky-vertex').textContent,
-      fragmentShader: document.getElementById('sky-fragment').textContent
+      vertexShader:   getFileContent("shaders/skydome.vert"),
+      fragmentShader: getFileContent("shaders/skydome.frag")
     });
 
     skydome = new THREE.Mesh(geometry, material);

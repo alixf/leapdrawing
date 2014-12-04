@@ -8,17 +8,21 @@ window.onload = function()
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     skydome = new Skydome(THREE.ImageUtils.loadTexture('assets/skydome.jpg'));
-    //scene.add(skydome);
+    scene.add(skydome);
 
     var material = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
     var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
     scene.add(cursor);
+    //cursor.parent = camera;
+    
+    var fakeCamera = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), {color : 0x0080FF});
 
     camera.position.z += 10;
     camera.position.y += 5;
 
     var gridHelper = new THREE.GridHelper(10, 0.5);     
     scene.add(gridHelper);
+    scene.add(new THREE.AxisHelper(1.5));
 
     var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 1, 0xFFFF00);
     scene.add(yArrow);

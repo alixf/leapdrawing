@@ -10,6 +10,7 @@
         <script src="libs/three.min.js"></script>
         <script src="libs/leap-0.6.3.js"></script>
         <script src="libs/leap-plugins-0.1.9.js"></script>
+        <script src="libs/jquery-2.1.1.js"></script>
         
         <!--Scripts-->
         <script src="scripts/Main.js"></script>
@@ -18,24 +19,5 @@
     </head>
     <body>
         <div id=output></div>
-        <script type="application/x-glsl" id="sky-vertex">
-            varying vec2 vUV;
-
-            void main() {
-              vUV = uv;
-              vec4 pos = vec4(position, 1.0);
-              gl_Position = projectionMatrix * modelViewMatrix * pos;
-            }
-        </script>
-
-        <script type="application/x-glsl" id="sky-fragment">
-            uniform sampler2D texture;
-            varying vec2 vUV;
-
-            void main() {
-              vec4 sample = texture2D(texture, vUV);
-              gl_FragColor = vec4(sample.xyz, sample.w);
-            }
-        </script>
     </body>
 </html>     
