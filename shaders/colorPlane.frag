@@ -1,4 +1,5 @@
 uniform float depth;
+uniform float alpha;
 varying vec2 vUV;
 
 void main() {
@@ -36,6 +37,6 @@ void main() {
 	r = v; g = l; b = m;
  }
  
- gl_FragColor = vec4(r, g, b, 1);
+ gl_FragColor = vec4(r, g, b, alpha);
 //gl_FragColor = vec4(1, 0, 0, 1);
 }
