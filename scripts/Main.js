@@ -73,6 +73,7 @@ window.onload = function()
         lightTool.update(input.isKeyDown("L".charCodeAt(0)), fingerPosition);
         colorTool.update(input.isKeyDown("P".charCodeAt(0)), fingerPosition);
 
+
         renderer.render(scene, camera);
     };
 

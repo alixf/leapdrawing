@@ -2,17 +2,34 @@ window.ColorTool = function(scene, colorPlane)
 {
     this.scene = scene;
     this.colorPlane = colorPlane;
-    this.update = function(enabled, position)
+    this.firstcall = true;
+    this.initialDepth = 0.;
+    this.update = function(enabled, fingerPosition)
     {
         if(enabled)
         {
-	    colorPlane.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
-            colorPlane.material.uniforms.depth.value = fingerPosition.z;
-            colorPlane.material.uniforms.depth.alpha = 1.;
+	    if(firstcall)
+            {
+	    	colorPlane.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
+                initialDepth = fingerPosition.z;
+                firstcall = false;
+            }
+            else
+            {
+                 depthvalue = initialDepth - fingerPosition.z;
+                 if (depthvalue < 0.)
+	         {   	
+			depthvalue = -depthvalue;
+		 }
+                 if(depthvalue!=initialDepth)
+           	 	colorPlane.material.uniforms.depth.value = depthvalue;
+            }
+	    colorPlane.material.uniforms.alpha.value = 1.;                               
         }
-	else
+        else
 	{
-	    colorPlane.material.uniforms.depth.alpha = 0.;
-	}	
+	     colorPlane.material.uniforms.alpha.value = 0.;
+             firstcall = true;
+	}
     }
 };
