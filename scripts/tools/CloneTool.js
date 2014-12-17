@@ -8,7 +8,7 @@ window.CloneTool = function(scene)
             var newObject = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), new THREE.MeshLambertMaterial({color : 0x00ff00}));
             newObject.position.set(position.x, position.y, position.z);
             newObject.updateMatrix();
-            scene.add(newObject);   
+            scene.add(newObject);
         }
     }
 };

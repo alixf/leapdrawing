@@ -23,22 +23,17 @@ window.onload = function()
     scene.add(new THREE.AxisHelper(1.5));
 
     var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 1, 0xFFFF00);
-    scene.add(yArrow);
-    
-    // Light setup
-    var pointLight = new THREE.PointLight(0xffffff, 1.0, 10); pointLight.position.set(0, 4, 0); scene.add(pointLight);
-    var lightMesh = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32, 32), new THREE.MeshBasicMaterial({color : pointLight.color}));
-    scene.add(lightMesh);
+    scene.add(yArrow);    
 
-    var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
-    var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
-    var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
+    //var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
+    //var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
+    //var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
 
     fingerPosition = {x : 0, y : 0, z : 0};
     
     var cloneTool = new CloneTool(scene);
     var cameraTool = new CameraTool(camera);
-    var lightTool = new LightTool(scene, pointLight, lightMesh);
+    var lightTool = new LightTool(scene);
 
     var colorPlane = new ColorPlane();
     scene.add(colorPlane);
