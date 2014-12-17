@@ -1,5 +1,9 @@
 window.onload = function()
 {
+    function getFileContent(url)
+    {
+        return $.ajax({type: "GET",  url: url, async: false}).responseText;
+    }
     window.input = new InputManager(document);
 
     var scene = new THREE.Scene();
@@ -8,12 +12,23 @@ window.onload = function()
     skydome = new Skydome(THREE.ImageUtils.loadTexture('assets/skydome.jpg'));
     scene.add(skydome);
 
-    var material = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
+    var uniforms = { r : { type: 'f', value: 1. },
+				 g : { type: 'f', value: 1. },
+				 b : { type: 'f', value: 1. },
+				alpha : {type: 'f', value: 0.5 } };
+    var material = new THREE.ShaderMaterial( {
+	                transparent: true,
+			uniforms: uniforms,
+			vertexShader:   getFileContent("shaders/cursor.vert"),
+                        fragmentShader: getFileContent("shaders/cursor.frag")
+                	});
     var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
     scene.add(cursor);
 
     camera.position.z += 10;
     camera.position.y += 5;
+    var initialCamQuaternion = new THREE.Quaternion();
+    initialCamQuaternion.copy(camera.quaternion);
 
     var gridHelper = new THREE.GridHelper(10, 0.5);
     scene.add(gridHelper);
@@ -47,7 +62,7 @@ window.onload = function()
 
     var colorPlane = new ColorPlane();
     scene.add(colorPlane);
-    var colorTool = new ColorTool(scene, colorPlane);
+    var colorTool = new ColorTool(scene, cursor, camera, initialCamQuaternion, colorPlane);
     input.register(colorTool, "P".charCodeAt(0));
     tools.push(colorTool);
     
