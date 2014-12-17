@@ -1,8 +1,5 @@
 window.onload = function()
 {
-    var renderer = new THREE.WebGLRenderer({antialiasing: true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
     window.input = new InputManager(document);
 
     var scene = new THREE.Scene();
@@ -23,29 +20,41 @@ window.onload = function()
     scene.add(new THREE.AxisHelper(1.5));
 
     var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 1, 0xFFFF00);
-    scene.add(yArrow);
-    
-    // Light setup
-    var pointLight = new THREE.PointLight(0xffffff, 1.0, 10); pointLight.position.set(0, 4, 0); scene.add(pointLight);
-    var lightMesh = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32, 32), new THREE.MeshBasicMaterial({color : pointLight.color}));
-    scene.add(lightMesh);
+    scene.add(yArrow);    
 
-    var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
-    var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
-    var ambientLight = new THREE.AmbientLight(0x333333); scene.add(ambientLight);
+    //var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
+    //var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
+    //var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
 
     fingerPosition = {x : 0, y : 0, z : 0};
+    cursorPosition = {x : 0, y : 0, z : 0};
+    canMoveCursor = true;
     
+    var tools = [];
+    
+    // Tools
     var cloneTool = new CloneTool(scene);
     input.register(cloneTool, "A".charCodeAt(0));
+    tools.push(cloneTool);
     
     var cameraTool = new CameraTool(camera);
-    var lightTool = new LightTool(scene, pointLight, lightMesh);
+    input.register(cameraTool, "C".charCodeAt(0));
+    tools.push(cameraTool);
+
+    var lightTool = new LightTool(scene);
+    input.register(lightTool, "L".charCodeAt(0));
+    tools.push(lightTool);
 
     var colorPlane = new ColorPlane();
     scene.add(colorPlane);
     var colorTool = new ColorTool(scene, colorPlane);
+    input.register(colorTool, "P".charCodeAt(0));
+    tools.push(colorTool);
     
+
+    var renderer = new THREE.WebGLRenderer({antialiasing: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
     var render = function()
     {
@@ -65,24 +74,23 @@ window.onload = function()
         if(input.isKeyDown(97)) // 0
             fingerPosition.y += speed;
         
-        var cursorPosition = new THREE.Vector3(fingerPosition.x, fingerPosition.y, fingerPosition.z);
+        cursorPosition = new THREE.Vector3(fingerPosition.x, fingerPosition.y, fingerPosition.z);
         camera.lookAt(new THREE.Vector3(0,camera.position.y,0));
         cursorPosition.applyQuaternion(camera.quaternion);
         camera.lookAt(new THREE.Vector3(0,0,0));
         
-        if(!input.isKeyDown("C".charCodeAt(0)))
+        if(canMoveCursor)
         {
             cursor.position.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
             yArrow.position.set(cursor.position.x, 0, cursor.position.z);   
         }
-        cloneTool.update(input.isKeyDown("A".charCodeAt(0)), cursorPosition);
-        cameraTool.update(input.isKeyDown("C".charCodeAt(0)), fingerPosition);
-        lightTool.update(input.isKeyDown("L".charCodeAt(0)), cursorPosition);
-        colorTool.update(input.isKeyDown("P".charCodeAt(0)), cursorPosition);
+        
+        for(i = 0; i < tools.length; ++i)
+            tools[i].update();
         
         renderer.render(scene, camera);
     };
-
+    
     var output = document.getElementById('output');
     Leap.loop(function(frame)
     {

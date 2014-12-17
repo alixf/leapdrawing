@@ -2,32 +2,37 @@ window.InputManager = function(element)
 {
     this.element = element;
     var data = [];
+    this.bindings = [];
     
     var keydown = function(event)
     {
-        data[event.keyCode] = true;
+        if(!data[event.keyCode])
+        {
+            data[event.keyCode] = true;
+            for(var i = 0; i < this.bindings.length; ++i)
+                if(event.keyCode == this.bindings[i].keyCode)
+                    this.bindings[i].tool.begin();
+        }
     }
     var keyup = function(event)
     {
-        data[event.keyCode] = false;
+        if(data[event.keyCode])
+        {
+            data[event.keyCode] = false;
+            for(var i = 0; i < this.bindings.length; ++i)
+                if(event.keyCode == this.bindings[i].keyCode)
+                    this.bindings[i].tool.end();
+        }
     }
     this.isKeyDown = function(keyCode)
     {
-        
         return data[keyCode];
     }
     this.register = function(tool, keyCode)
     {
-        console.log(keyCode);
-        document.addEventListener("keydown", function(keyCode, event)
-        {
-            return function(event)
-            {
-                
-            }
-        });
-        //document.addEventListener("keyup", function(tool, keyCode, event){ if(event.keyCode == keyCode) tool.end(); }.bind(tool, keyCode));
+        this.bindings.push({keyCode : keyCode, tool : tool});
     }
-    this.element.addEventListener("keydown", keydown);
-    this.element.addEventListener("keyup", keyup);
+    
+    this.element.addEventListener("keydown", keydown.bind(this));
+    this.element.addEventListener("keyup", keyup.bind(this));
 };

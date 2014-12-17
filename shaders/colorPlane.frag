@@ -1,11 +1,11 @@
-uniform float depth;
+uniform float V;
 uniform float alpha;
 varying vec2 vUV;
 
 void main() {
  float h = vUV.x * 360.;
  float s = vUV.y;
- float v = depth;
+ float v = V;
 
  
  float hi = mod(floor(h/60.), 6.);

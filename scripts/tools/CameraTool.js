@@ -1,11 +1,25 @@
 window.CameraTool = function(camera)
 {
     this.camera = camera;
-    this.update = function(enabled, position)
+    this.enabled = false;
+    
+    this.begin = function()
     {
-        if(enabled)
+        this.enabled = true;
+        canMoveCursor = false;
+    }
+    
+    this.end = function()
+    {
+        this.enabled = false;
+        canMoveCursor = true;
+    }
+    
+    this.update = function()
+    {
+        if(this.enabled)
         {
-            this.camera.position.set(position.x*2, position.y*2, position.z*2);
+            this.camera.position.set(fingerPosition.x*2, fingerPosition.y*2, fingerPosition.z*2);
             this.camera.lookAt(new THREE.Vector3(0,0,0));
         }
     }

@@ -1,24 +1,28 @@
 window.CloneTool = function(scene)
 {
     this.scene = scene;
-    this.update = function(enabled, position)
-    {
-        if(enabled)
-        {
-            var newObject = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), new THREE.MeshLambertMaterial({color : 0x00ff00}));
-            newObject.position.set(position.x, position.y, position.z);
-            newObject.updateMatrix();
-            scene.add(newObject);   
-        }
-    }
+    this.enabled = false;
+    this.newObject = null;
     
     this.begin = function()
     {
-        console.log("begin");
+        this.enabled = true;
+        this.newObject = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), new THREE.MeshLambertMaterial({color : 0x00ff00}));
+        scene.add(this.newObject);
     }
     
     this.end = function()
     {
-        console.log("end");
+        this.enabled = false;
+        this.newObject = null;
+    }
+    
+    this.update = function()
+    {
+        if(this.enabled)
+        {
+            this.newObject.position.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
+            this.newObject.updateMatrix();
+        }
     }
 };
