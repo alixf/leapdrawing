@@ -1,5 +1,9 @@
 window.onload = function()
 {
+    function getFileContent(url)
+    {
+        return $.ajax({type: "GET",  url: url, async: false}).responseText;
+    }
     window.input = new InputManager(document);
 
     var scene = new THREE.Scene();
@@ -15,6 +19,8 @@ window.onload = function()
     camera.position.y += 5;
     camera.position.z += 10;
     camera.lookAt(new THREE.Vector3(0,0,0));
+    var initialCamQuaternion = new THREE.Quaternion();
+    initialCamQuaternion.copy(camera.quaternion);
 
     var gridHelper = new THREE.GridHelper(10, 0.5);
     scene.add(gridHelper);
@@ -69,7 +75,7 @@ window.onload = function()
 
     var colorPlane = new ColorPlane();
     scene.add(colorPlane);
-    var colorTool = new ColorTool(scene, colorPlane);
+    var colorTool = new ColorTool(scene, cursor, camera, initialCamQuaternion, colorPlane);
     input.register(colorTool, "P".charCodeAt(0));
     tools.push(colorTool);
     
