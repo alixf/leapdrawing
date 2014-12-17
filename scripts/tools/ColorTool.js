@@ -9,7 +9,7 @@ window.ColorTool = function(scene, colorPlane)
     {
         if(enabled)
         {
-	    if(firstcall)
+            if(firstcall)
             {
 	    	colorPlane.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
                 initialDepth = fingerPosition.z;
@@ -31,12 +31,12 @@ window.ColorTool = function(scene, colorPlane)
                  if(new_V > 0.4 && new_V < 1.1)
            	 	colorPlane.material.uniforms.V.value = new_V;
             }
-	    colorPlane.material.uniforms.alpha.value = 1.;                               
+            colorPlane.material.uniforms.alpha.value = 1.;
         }
         else
-	{
-	     colorPlane.material.uniforms.alpha.value = 0.;
-             firstcall = true;
-	}
+        {
+            colorPlane.material.uniforms.alpha.value = 0.;
+            firstcall = true;
+        }
     }
 };

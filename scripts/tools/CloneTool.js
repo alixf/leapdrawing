@@ -5,10 +5,10 @@ window.CloneTool = function(scene)
     {
         if(enabled)
         {
-            var newObject = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), new THREE.MeshLambertMaterial({color : 0x00ff00}));
-            newObject.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
+            var newObject = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), new THREE.MeshLambertMaterial({color : 0x00ff00}));
+            newObject.position.set(position.x, position.y, position.z);
             newObject.updateMatrix();
-            scene.add(newObject);   
+            scene.add(newObject);
         }
     }
 };
