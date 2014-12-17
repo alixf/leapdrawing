@@ -12,16 +12,7 @@ window.onload = function()
     skydome = new Skydome(THREE.ImageUtils.loadTexture('assets/skydome.jpg'));
     scene.add(skydome);
 
-    var uniforms = { r : { type: 'f', value: 1. },
-				 g : { type: 'f', value: 1. },
-				 b : { type: 'f', value: 1. },
-				alpha : {type: 'f', value: 0.5 } };
-    var material = new THREE.ShaderMaterial( {
-	                transparent: true,
-			uniforms: uniforms,
-			vertexShader:   getFileContent("shaders/cursor.vert"),
-                        fragmentShader: getFileContent("shaders/cursor.frag")
-                	});
+    var material = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
     var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
     scene.add(cursor);
 

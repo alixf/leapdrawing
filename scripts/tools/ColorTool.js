@@ -60,7 +60,6 @@ window.ColorTool = function(scene, cursor, camera, initialCamQuaternion, colorPl
 	    
 	    if (fingerPosition.x>=colorPlane.position.x-2.5 && fingerPosition.x<=colorPlane.position.x+2.5 && fingerPosition.y>=colorPlane.position.y-2.5 && fingerPosition.y<=colorPlane.position.y+2.5)
 	    {
-		cursor.material.uniforms.alpha.value = 1.;
 		    
 		h = (Math.abs(colorPlane.position.x-2.5 - fingerPosition.x)/5.) * 360;
 		s = Math.abs(colorPlane.position.y-2.5 - fingerPosition.y)/5.;
@@ -92,16 +91,13 @@ window.ColorTool = function(scene, cursor, camera, initialCamQuaternion, colorPl
 		else {
 			r = v; g = l; b = m;
 		}
-		cursor.material.uniforms.r.value = r;
-		cursor.material.uniforms.g.value = g;
-		cursor.material.uniforms.b.value = b;
+	        cursor.material.opacity = 1.;
+		cursor.material.color.setRGB(r,g,b);
 	  }
 	  else
 	  {
-		cursor.material.uniforms.alpha.value = 0.5;
-		cursor.material.uniforms.r.value = 1;
-		cursor.material.uniforms.g.value = 1;
-		cursor.material.uniforms.b.value = 1;
+		cursor.material.opacity = 0.5;
+		cursor.material.color.setRGB(1,1,1);
 	  }
 	  
         }
@@ -115,10 +111,8 @@ window.ColorTool = function(scene, cursor, camera, initialCamQuaternion, colorPl
 	colorPlane.position.set(0,0, -1000);
 	camera.position.set(this.camX, this.camY, this.camZ);
         colorPlane.material.uniforms.alpha.value = 0.;
-	cursor.material.uniforms.alpha.value = 0.5;
-	cursor.material.uniforms.r.value = 1;
-	cursor.material.uniforms.g.value = 1;
-	cursor.material.uniforms.b.value = 1;
+	cursor.material.opacity = 0.5;
+	cursor.material.color.setRGB(1,1,1);
     }
         
     
