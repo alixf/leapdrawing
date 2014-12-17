@@ -12,8 +12,9 @@ window.onload = function()
     var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
     scene.add(cursor);
 
-    camera.position.z += 10;
     camera.position.y += 5;
+    camera.position.z += 10;
+    camera.lookAt(new THREE.Vector3(0,0,0));
 
     var gridHelper = new THREE.GridHelper(10, 0.5);
     scene.add(gridHelper);
@@ -32,10 +33,31 @@ window.onload = function()
     
     var tools = [];
     
+    
+    var HistoryManager = function()
+    {
+        this.commands = [];
+        this.undo = function()
+        {
+            var command = this.commands.pop();
+            if(command != null)
+                command();
+        };
+        this.register = function(command)
+        {
+            this.commands.push(command);
+        }
+    }
+    historyManager = new HistoryManager();
+    
     // Tools
     var cloneTool = new CloneTool(scene);
     input.register(cloneTool, "A".charCodeAt(0));
     tools.push(cloneTool);
+    
+    var cubeTool = new CubeTool(scene);
+    input.register(cubeTool, "B".charCodeAt(0));
+    tools.push(cubeTool);
     
     var cameraTool = new CameraTool(camera);
     input.register(cameraTool, "C".charCodeAt(0));
@@ -91,14 +113,42 @@ window.onload = function()
         renderer.render(scene, camera);
     };
     
+    var doingGesture = false;
     var output = document.getElementById('output');
-    Leap.loop(function(frame)
+    var controller = Leap.loop({enableGestures: true}, function(frame)
     {
-        if(frame.hands.length > 0)
+        if(frame.valid)
         {
-            var indexPosition = frame.hands[0].indexFinger.tipPosition;
-            var finger = {x:indexPosition[0]/25, y:indexPosition[1]/50, z:indexPosition[2]/25};
-            window.fingerPosition = finger;
+            if(frame.hands.length > 0)
+            {
+                var indexPosition = frame.hands[0].indexFinger.tipPosition;
+                var finger = {x:indexPosition[0]/25, y:indexPosition[1]/50, z:indexPosition[2]/25};
+                window.fingerPosition = finger;
+            }
+            if(frame.gestures.length > 0)
+            {
+                frame.gestures.forEach(function(gesture)
+                {
+                    switch (gesture.type)
+                    {
+                    case "swipe":
+                            
+                        if(!doingGesture)
+                        {
+                            doingGesture = true;
+                            if(gesture.direction[0] < 0) // Left swipe
+                            {
+                                historyManager.undo();
+                            }
+                        }
+                        break;
+                    }
+                });
+            }
+            else if(doingGesture)
+            {
+                doingGesture = false;
+            }
         }
     });
 

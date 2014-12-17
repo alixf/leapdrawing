@@ -1,22 +1,27 @@
-window.CloneTool = function(scene)
+window.CubeTool = function(scene)
 {
     this.scene = scene;
     this.enabled = false;
     this.newObject = null;
+    this.startPosition = new THREE.Vector3();
     
     this.begin = function()
     {
         this.enabled = true;
-        this.newObject = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), new THREE.MeshLambertMaterial({color : 0x00ff00}));
-        scene.add(this.newObject);
-        this.newObject.position.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
-        this.newObject.updateMatrix();
+    
+        this.startPosition.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
         
-        // Undo creation
+        var geometry = new THREE.BoxGeometry(1, 1, 1);
+        var material = new THREE.MeshLambertMaterial({color : 0x00ff00});
+        var cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        this.newObject = cube;
+        
+        /*// Undo creation
         historyManager.register(function(scene, obj) { return function()
         {
             scene.remove(obj);
-        }}(scene, this.newObject));
+        }}(scene, this.newObject));*/
     }
     
     this.end = function()

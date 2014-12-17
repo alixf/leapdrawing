@@ -24,11 +24,13 @@ window.LightTool = function(scene)
 
         if(i == this.lightList.length)
         {
+            // Create pointlight
             var pointLight = new THREE.PointLight(0xffffff, 1.0, 10);
             pointLight.position.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
             scene.add(pointLight);
             this.lightList.push(pointLight);
             
+            // Create light mesh
             var lightMesh = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32, 32), new THREE.MeshBasicMaterial({color : pointLight.color}));
             pointLight.add(lightMesh);
             this.lightMeshList.push(lightMesh);
@@ -46,7 +48,20 @@ window.LightTool = function(scene)
                 }
             }
             updateChildren(scene);
+            
+            // Undo creation
+            historyManager.register(function(scene, obj) { return function()
+            {
+                scene.remove(obj);
+            }}(scene, this.selectedLight));
         }
+        
+            
+        // Undo move
+        historyManager.register(function(obj, x, y, z) { return function()
+        {
+            obj.position.set(x, y, z);
+        }}(this.selectedLight, cursorPosition.x, cursorPosition.y, cursorPosition.z));
     }
     
     this.end = function()
