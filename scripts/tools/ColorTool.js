@@ -4,6 +4,7 @@ window.ColorTool = function(scene, colorPlane)
     this.colorPlane = colorPlane;
     this.firstcall = true;
     this.initialDepth = 0.;
+    this.initialV = 0;
     this.update = function(enabled, fingerPosition)
     {
         if(enabled)
@@ -12,17 +13,23 @@ window.ColorTool = function(scene, colorPlane)
             {
 	    	colorPlane.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
                 initialDepth = fingerPosition.z;
+		initialV = 0.4;
+	        colorPlane.material.uniforms.V.value = initialV;
                 firstcall = false;
             }
             else
             {
-                 depthvalue = initialDepth - fingerPosition.z;
-                 if (depthvalue < 0.)
-	         {   	
-			depthvalue = -depthvalue;
-		 }
-                 if(depthvalue!=initialDepth)
-           	 	colorPlane.material.uniforms.depth.value = depthvalue;
+                 if (fingerPosition.z < initialDepth)
+			{
+                          depthVariation = initialDepth - fingerPosition.z;
+                          if (depthVariation < 0.)
+	         	       {   	
+				depthVariation = -depthVariation;
+		 	       }
+	 		}
+                 new_V = initialV + depthVariation/10.;
+                 if(new_V > 0.4 && new_V < 1.1)
+           	 	colorPlane.material.uniforms.V.value = new_V;
             }
 	    colorPlane.material.uniforms.alpha.value = 1.;                               
         }

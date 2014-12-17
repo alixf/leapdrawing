@@ -6,7 +6,7 @@ window.ColorPlane = function()
     }
     
     var geometry = new THREE.PlaneGeometry( 5, 5, 32 );
-    var uniforms = { depth: { type: 'f', value: 0.5 },
+    var uniforms = { V : { type: 'f', value: 0.4 },
 		     alpha : {type: 'f', value: 0. } };
     var material = new THREE.ShaderMaterial( {
 	                transparent: true,
