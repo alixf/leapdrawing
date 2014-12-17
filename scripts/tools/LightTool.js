@@ -1,12 +1,12 @@
 window.LightTool = function(scene)
 {
+	this.scene = scene;
     this.enabled = false;
     
     this.lightList = [];
     this.lightMeshList = [];
-	this.scene = scene;
-	var vec = new THREE.Vector3(0,0,0);
     
+	var vec = new THREE.Vector3(0,0,0);
     this.selectedLight = null;
     
     this.begin = function()
@@ -34,6 +34,18 @@ window.LightTool = function(scene)
             this.lightMeshList.push(lightMesh);
             
             this.selectedLight = pointLight;
+            
+            // Update scene materials
+            function updateChildren(o)
+            {
+                for(var i = 0; i < o.children.length; i++)
+                {
+                    if(o.children[i].material != null)
+                        o.children[i].material.needsUpdate = true;
+                    updateChildren(o.children[i]);
+                }
+            }
+            updateChildren(scene);
         }
     }
     
@@ -42,9 +54,9 @@ window.LightTool = function(scene)
         this.enabled = false;
         this.selectedLight = null;
     }
-    
-    this.update = function()
-    {
+
+    this.update = function(enabled, position)
+    {        
         if(this.enabled)
         {
             this.selectedLight.position.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
