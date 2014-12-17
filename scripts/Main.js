@@ -7,15 +7,13 @@ window.onload = function()
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    scene.add(camera);
     skydome = new Skydome(THREE.ImageUtils.loadTexture('assets/skydome.jpg'));
     scene.add(skydome);
 
     var material = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
     var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
     scene.add(cursor);
-    //cursor.parent = camera;
-    
-    var fakeCamera = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), {color : 0x0080FF});
 
     camera.position.z += 10;
     camera.position.y += 5;
@@ -32,9 +30,9 @@ window.onload = function()
     var lightMesh = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32, 32), new THREE.MeshBasicMaterial({color : pointLight.color}));
     scene.add(lightMesh);
 
-    //var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
-    //var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
-    //var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
+    var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
+    var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
+    var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
 
     fingerPosition = {x : 0, y : 0, z : 0};
     
@@ -64,16 +62,20 @@ window.onload = function()
             fingerPosition.y -= speed;
         if(input.isKeyDown(97)) // 0
             fingerPosition.y += speed;
-
-        cursor.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
-        yArrow.position.set(fingerPosition.x, 0, fingerPosition.z);
-
-        cloneTool.update(input.isKeyDown("A".charCodeAt(0)), fingerPosition);
+        
+        var cursorPosition = new THREE.Vector3(fingerPosition.x, fingerPosition.y, fingerPosition.z);
+        camera.lookAt(new THREE.Vector3(0,camera.position.y,0));
+        cursorPosition.applyQuaternion(camera.quaternion);
+        camera.lookAt(new THREE.Vector3(0,0,0));
+        
+        cursor.position.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
+        yArrow.position.set(cursor.position.x, 0, cursor.position.z);
+        
+        cloneTool.update(input.isKeyDown("A".charCodeAt(0)), cursorPosition);
         cameraTool.update(input.isKeyDown("C".charCodeAt(0)), fingerPosition);
-        lightTool.update(input.isKeyDown("L".charCodeAt(0)), fingerPosition);
-        colorTool.update(input.isKeyDown("P".charCodeAt(0)), fingerPosition);
-
-
+        lightTool.update(input.isKeyDown("L".charCodeAt(0)), cursorPosition);
+        colorTool.update(input.isKeyDown("P".charCodeAt(0)), cursorPosition);
+        
         renderer.render(scene, camera);
     };
 

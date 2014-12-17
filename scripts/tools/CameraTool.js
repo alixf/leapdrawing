@@ -5,7 +5,7 @@ window.CameraTool = function(camera)
     {
         if(enabled)
         {
-            this.camera.position.set(fingerPosition.x*3, fingerPosition.y*2, fingerPosition.z*2);
+            this.camera.position.set(position.x*2, position.y*2, position.z*2);
             this.camera.lookAt(new THREE.Vector3(0,0,0));
         }
     }

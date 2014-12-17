@@ -6,7 +6,7 @@ window.ColorTool = function(scene, colorPlane)
     {
         if(enabled)
         {
-            colorPlane.material.uniforms.depth.value = fingerPosition.z;
+            colorPlane.material.uniforms.depth.value = position.z;
         }
     }
 };

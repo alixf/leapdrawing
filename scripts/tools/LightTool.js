@@ -4,9 +4,9 @@ window.LightTool = function(scene, pointLight, meshLight)
     {        
         if(enabled)
         {            
-            meshLight.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
-            pointLight.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
+            meshLight.position.set(position.x, position.y, position.z);
+            pointLight.position.set(position.x, position.y, position.z);
             meshLight.updateMatrix();            
-        }        
+        }
     }
 };
