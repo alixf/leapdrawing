@@ -32,11 +32,13 @@ window.onload = function()
 
     var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
     var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
-    var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
+    var ambientLight = new THREE.AmbientLight(0x333333); scene.add(ambientLight);
 
     fingerPosition = {x : 0, y : 0, z : 0};
     
     var cloneTool = new CloneTool(scene);
+    input.register(cloneTool, "A".charCodeAt(0));
+    
     var cameraTool = new CameraTool(camera);
     var lightTool = new LightTool(scene, pointLight, lightMesh);
 
@@ -68,9 +70,11 @@ window.onload = function()
         cursorPosition.applyQuaternion(camera.quaternion);
         camera.lookAt(new THREE.Vector3(0,0,0));
         
-        cursor.position.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
-        yArrow.position.set(cursor.position.x, 0, cursor.position.z);
-        
+        if(!input.isKeyDown("C".charCodeAt(0)))
+        {
+            cursor.position.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
+            yArrow.position.set(cursor.position.x, 0, cursor.position.z);   
+        }
         cloneTool.update(input.isKeyDown("A".charCodeAt(0)), cursorPosition);
         cameraTool.update(input.isKeyDown("C".charCodeAt(0)), fingerPosition);
         lightTool.update(input.isKeyDown("L".charCodeAt(0)), cursorPosition);

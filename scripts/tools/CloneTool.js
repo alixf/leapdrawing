@@ -11,4 +11,14 @@ window.CloneTool = function(scene)
             scene.add(newObject);   
         }
     }
+    
+    this.begin = function()
+    {
+        console.log("begin");
+    }
+    
+    this.end = function()
+    {
+        console.log("end");
+    }
 };

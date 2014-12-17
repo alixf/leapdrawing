@@ -1,6 +1,8 @@
 window.InputManager = function(element)
 {
+    this.element = element;
     var data = [];
+    
     var keydown = function(event)
     {
         data[event.keyCode] = true;
@@ -11,8 +13,21 @@ window.InputManager = function(element)
     }
     this.isKeyDown = function(keyCode)
     {
+        
         return data[keyCode];
     }
-    element.addEventListener("keydown", keydown);
-    element.addEventListener("keyup", keyup);
+    this.register = function(tool, keyCode)
+    {
+        console.log(keyCode);
+        document.addEventListener("keydown", function(keyCode, event)
+        {
+            return function(event)
+            {
+                
+            }
+        });
+        //document.addEventListener("keyup", function(tool, keyCode, event){ if(event.keyCode == keyCode) tool.end(); }.bind(tool, keyCode));
+    }
+    this.element.addEventListener("keydown", keydown);
+    this.element.addEventListener("keyup", keyup);
 };
