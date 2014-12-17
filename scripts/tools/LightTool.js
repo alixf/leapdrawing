@@ -55,7 +55,7 @@ window.LightTool = function(scene)
         this.selectedLight = null;
     }
 
-    this.update = function(enabled, position)
+    this.update = function()
     {        
         if(this.enabled)
         {
