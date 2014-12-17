@@ -1,9 +1,12 @@
 window.LightTool = function(scene)
 {
     this.lightList = [];
-    this.lightMeshList = [];
-	this.scene = scene;
-	var vec = new THREE.Vector3(0,0,0);
+	this.scene = scene;	
+    this.geometry = new THREE.SphereGeometry(0.2, 32, 32);
+    this.material = new THREE.MeshBasicMaterial({color : 0xfffffff});
+
+    var vec = new THREE.Vector3(0,0,0);
+
     this.update = function(enabled, position)
     {        
         if(enabled)
@@ -14,26 +17,25 @@ window.LightTool = function(scene)
         		if(vec.lengthSq() < 0.49)
         		{
         			this.lightList[i].position.set(position.x, position.y, position.z); 
-	    			this.lightMeshList[i].position.set(position.x, position.y, position.z);
+	    			//this.lightMeshList[i].position.set(position.x, position.y, position.z);
 	    			break;
         		}
         	} 
 
         	if( i == this.lightList.length )
         	{        		
-        		var pointLight = new THREE.PointLight(0xffffff, 1.0, 10); 	        
-		    	var lightMesh = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32, 32), new THREE.MeshBasicMaterial({color : pointLight.color}));
+        		var pointLight = new THREE.PointLight(0xffffff, 1.0, 10);
+                this.material.color = pointLight.color;
+		    	var lightMesh = new THREE.Mesh(this.geometry, this.material);
 
 		    	pointLight.position.set(position.x, position.y, position.z);
 		    	lightMesh.position.set(position.x, position.y, position.z);
 
+                pointLight.add(lightMesh);
 		        scene.add(pointLight);
-		    	scene.add(lightMesh);
-		    	this.lightList.push(pointLight);
-		    	this.lightMeshList.push(lightMesh);
+		    	
+		    	this.lightList.push(pointLight);		    	
         	}
-
-            //meshLight.updateMatrix();
         }
     }
 };
