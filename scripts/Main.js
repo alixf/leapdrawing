@@ -9,7 +9,9 @@ window.onload = function()
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     scene.add(camera);
-    skydome = new Skydome(THREE.ImageUtils.loadTexture('assets/skydome.jpg'));
+    
+    skyMat = [];
+    skydome = new Skydome(THREE.ImageUtils.loadTexture('assets/sky.jpg'), THREE.ImageUtils.loadTexture('assets/skydome.jpg'));    
     scene.add(skydome);
 
     var material = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
@@ -31,9 +33,12 @@ window.onload = function()
     var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 1, 0xFFFF00);
     scene.add(yArrow);    
 
-    //var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
-    //var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
-    //var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
+    var directionalLight = new THREE.DirectionalLight(0x777777, 1.0); directionalLight.position.set(0, 0, -1); scene.add(directionalLight);  
+    var directionalLight2 = new THREE.DirectionalLight(0x333333, 1.0); directionalLight2.position.set(0, 0, 1); scene.add(directionalLight2);
+    var directionalLight3 = new THREE.DirectionalLight(0x444444, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
+    scene.add(directionalLight);
+    scene.add(directionalLight2);
+    scene.add(directionalLight3);    
 
     fingerPosition = {x : 0, y : 0, z : 0};
     cursorPosition = {x : 0, y : 0, z : 0};
@@ -44,6 +49,27 @@ window.onload = function()
     
     var tools = [];
     
+    var SwitchLights = function()
+    {
+        this.enabled = false;
+
+        this.begin = function()
+        {
+            this.enabled = !this.enabled;
+            
+            skydome.material = skyMat[directionalLight.intensity];
+
+            directionalLight.intensity = 1. - directionalLight.intensity;
+            directionalLight2.intensity = 1. - directionalLight2.intensity;
+            directionalLight3.intensity = 1. - directionalLight3.intensity;
+        }     
+
+        this.end = function()
+        {}   
+
+        this.update = function()
+        {}            
+    }
     
     
     var HistoryManager = function()
@@ -61,6 +87,8 @@ window.onload = function()
         }
     }
     historyManager = new HistoryManager();
+    switchLights = new SwitchLights();
+    input.register(switchLights, "T".charCodeAt(0));
     
     // Tools
     var cloneTool = new CloneTool(scene);
@@ -102,6 +130,23 @@ window.onload = function()
     var oculusEnabled = true;
     var effect = new THREE.OculusRiftEffect(renderer, {worldScale: 100});
     effect.setSize( window.innerWidth, window.innerHeight );
+
+    var SwitchOculus = function()
+    {
+        this.enabled = false;
+
+        this.begin = function()
+        {
+            if(oculusEnabled)
+                renderer.setSize(window.innerWidth, window.innerHeight);
+
+            this.enabled = !this.enabled;            
+            oculusEnabled = !oculusEnabled;
+        }                    
+    }
+
+    oclulus = new SwitchOculus();
+    input.register(oclulus, "O".charCodeAt(0));
 
     var render = function()
     {
