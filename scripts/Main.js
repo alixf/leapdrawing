@@ -65,6 +65,10 @@ window.onload = function()
     input.register(cubeTool, "B".charCodeAt(0));
     tools.push(cubeTool);
     
+    var splineTool = new SplineTool(scene);
+    input.register(splineTool, "S".charCodeAt(0));
+    tools.push(splineTool);
+    
     var cameraTool = new CameraTool(camera);
     input.register(cameraTool, "C".charCodeAt(0));
     tools.push(cameraTool);
