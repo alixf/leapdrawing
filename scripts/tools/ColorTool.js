@@ -107,11 +107,11 @@ window.ColorTool = function(scene, cursor, camera, initialCamQuaternion, colorPl
     this.end = function()
     {
         this.enabled = false;
-	colorPlane.position.set(0,0, -1000);
-	camera.position.set(this.camX, this.camY, this.camZ);
-        colorPlane.material.uniforms.alpha.value = 0.;
-	cursor.material.opacity = 0.5;
-	cursor.material.color.setRGB(1,1,1);
+		colorPlane.position.set(0,0, -1000);
+		camera.position.set(this.camX, this.camY, this.camZ);
+	        colorPlane.material.uniforms.alpha.value = 0.;
+		cursor.material.opacity = 0.5;
+		cursor.material.color.setRGB(1,1,1);
     }
         
     

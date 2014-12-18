@@ -83,7 +83,7 @@ window.onload = function()
     tools.push(lightTool);
 
     var colorPlane = new ColorPlane();
-    scene.add(colorPlane);
+    scene.add(colorPlane);    
     var colorTool = new ColorTool(scene, cursor, camera, initialCamQuaternion, colorPlane);
     input.register(colorTool, "P".charCodeAt(0));
     tools.push(colorTool);
