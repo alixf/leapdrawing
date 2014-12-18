@@ -123,7 +123,7 @@ window.onload = function()
     tools.push(colorTool);
     
 
-    var renderer = new THREE.WebGLRenderer({antialiasing: true});
+    var renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     
