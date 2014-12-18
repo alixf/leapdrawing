@@ -31,13 +31,14 @@ window.onload = function()
 
     //var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
     //var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
-    //var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
+    var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
 
     fingerPosition = {x : 0, y : 0, z : 0};
     cursorPosition = {x : 0, y : 0, z : 0};
     canMoveCursor = true;
     
     var tools = [];
+    
     
     
     var HistoryManager = function()
@@ -87,6 +88,10 @@ window.onload = function()
     var renderer = new THREE.WebGLRenderer({antialiasing: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
+    
+    var oculusEnabled = false;
+    var effect = new THREE.OculusRiftEffect(renderer, {worldScale: 100});
+    effect.setSize( window.innerWidth, window.innerHeight );
 
     var render = function()
     {
@@ -120,7 +125,10 @@ window.onload = function()
         for(i = 0; i < tools.length; ++i)
             tools[i].update();
         
-        renderer.render(scene, camera);
+        if(oculusEnabled)
+            effect.render(scene, camera);
+        else
+            renderer.render(scene, camera);
     };
     
     var doingGesture = false;
