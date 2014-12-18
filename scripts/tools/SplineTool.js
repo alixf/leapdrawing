@@ -24,6 +24,13 @@ window.SplineTool = function(scene)
         
         this.currentObj = new THREE.Mesh(this.geometry, material);
         scene.add(this.currentObj);
+        
+        
+        // Undo creation
+        historyManager.register(function(scene, obj) { return function()
+        {
+            scene.remove(obj);
+        }}(scene, this.currentObj));
 
     }
     

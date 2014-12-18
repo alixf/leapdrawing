@@ -22,7 +22,7 @@ window.CubeTool = function(scene)
                                             Math.floor(cursorPosition.z*2)/2+0.25);
                 
                 var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-                var material = new THREE.MeshLambertMaterial({color : 0x00ff00});
+                var material = new THREE.MeshLambertMaterial({color : mainColor.getHex()});
                 var cube = new THREE.Mesh(geometry, material);
                 scene.add(cube);
                 this.newObject = cube;
@@ -46,13 +46,12 @@ window.CubeTool = function(scene)
             this.newObject = cube;
                 
         }
-                
         
-        /*// Undo creation
+        // Undo creation
         historyManager.register(function(scene, obj) { return function()
         {
             scene.remove(obj);
-        }}(scene, this.newObject));*/
+        }}(scene, this.newObject));
     }
     
     this.end = function()

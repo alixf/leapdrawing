@@ -99,7 +99,7 @@ window.onload = function()
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     
-    var oculusEnabled = false;
+    var oculusEnabled = true;
     var effect = new THREE.OculusRiftEffect(renderer, {worldScale: 100});
     effect.setSize( window.innerWidth, window.innerHeight );
 
