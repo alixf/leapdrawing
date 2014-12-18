@@ -1,11 +1,18 @@
-window.VoxelTool = function(scene)
+window.VoxelTool = function(scene, cursor, arrow)
 {
+    this.enabled = false;
+
     this.scene = scene;
+
     this.lines = [];
-    this.geom = new THREE.Geometry();
-    this.enabled = false;    
-    this.material = new THREE.LineBasicMaterial({color : 0xe60096});
+    this.cursor = cursor;
+    this.arrow = arrow;
+
+    this.geom = new THREE.Geometry();      
+    this.material = new THREE.LineBasicMaterial({color : 0xe60096, linewidth: 2});
     this.dashedMaterial = new THREE.LineDashedMaterial({linewidth: 1, color : 0x64bebe, dashSize: 0.1, gapSize: 0.2});
+
+    this.startIndice = 0;
 
     this.init = function()
     {    
@@ -23,6 +30,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.min.y, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.min.y, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         var line = new THREE.Line( box, this.material );
         this.lines[0] = line;
         scene.add( line );
@@ -31,6 +39,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.min.y, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.max.y, geometry.boundingBox.min.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[1] = line;
         scene.add( line );
@@ -39,6 +48,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.min.y, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.min.y, geometry.boundingBox.min.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[2] = line;
         scene.add( line );
@@ -47,6 +57,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.min.y, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.min.y, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[3] = line;
         scene.add( line );
@@ -56,6 +67,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.min.y, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.max.y, geometry.boundingBox.min.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[4] = line;
         scene.add( line );
@@ -64,6 +76,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.max.y, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.max.y, geometry.boundingBox.min.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[5] = line;
         scene.add( line );
@@ -72,6 +85,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.max.y, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.max.y, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[6] = line;
         scene.add( line );
@@ -80,6 +94,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.max.y, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.max.y, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[7] = line;
         scene.add( line );
@@ -89,6 +104,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.max.y, geometry.boundingBox.max.z ), 
                             new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.max.y, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[8] = line;
         scene.add( line );
@@ -97,6 +113,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.max.y, geometry.boundingBox.max.z ), 
                             new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.min.y, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[9] = line;
         scene.add( line );
@@ -105,6 +122,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.min.y, geometry.boundingBox.max.z ), 
                             new THREE.Vector3( geometry.boundingBox.min.x, geometry.boundingBox.min.y, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[10] = line;
         scene.add( line );
@@ -113,6 +131,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.min.y, geometry.boundingBox.max.z ), 
                             new THREE.Vector3( geometry.boundingBox.max.x, geometry.boundingBox.max.y, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[11] = line;
         scene.add( line );
@@ -239,6 +258,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.min.x, 0, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.max.x, 0, geometry.boundingBox.min.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[24] = line;
         scene.add( line );
@@ -247,6 +267,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.min.x, 0, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.min.x, 0, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[25] = line;
         scene.add( line );
@@ -255,6 +276,7 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.max.x, 0, geometry.boundingBox.min.z ), 
                             new THREE.Vector3( geometry.boundingBox.max.x, 0, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[26] = line;
         scene.add( line );
@@ -263,10 +285,10 @@ window.VoxelTool = function(scene)
         box.vertices.push(  new THREE.Vector3( geometry.boundingBox.min.x, 0, geometry.boundingBox.max.z ), 
                             new THREE.Vector3( geometry.boundingBox.max.x, 0, geometry.boundingBox.max.z )
                         );
+        box.computeLineDistances();
         line = new THREE.Line( box, this.material );
         this.lines[27] = line;
-        scene.add( line );
-
+        scene.add( line );        
 
         for(i = 0; i < this.lines.length; ++i)
         {
@@ -277,8 +299,7 @@ window.VoxelTool = function(scene)
 
         for(i = 0; i < this.lines.length; ++i)
         {
-            this.lines[i].geometry.vertices[0].set(0, 0, 0);
-            this.lines[i].geometry.vertices[1].set(0, 0, 0);
+            this.lines[i].visible = false;            
         }      
     }    
     
@@ -286,15 +307,26 @@ window.VoxelTool = function(scene)
     {
         if(this.enabled)
         {
+            voxelMode = false;
+            this.arrow.visible = true;
+            this.cursor.visible = true;
             for(i = 0; i < this.lines.length; ++i)
             {
-                this.lines[i].geometry.vertices[0].set(0, 0, 0);
-                this.lines[i].geometry.vertices[1].set(0, 0, 0);
-                this.lines[i].geometry.verticesNeedUpdate = true;
+                this.lines[i].visible = false;
             }
         }   
+        else
+        {
+            voxelMode = true;
+            this.arrow.visible = false;
+            this.cursor.visible = false;
+            for(i = 0; i < this.lines.length; ++i)
+            {
+                this.lines[i].visible = true;
+            }
+        }
 
-        this.enabled = !this.enabled;             
+        this.enabled = !this.enabled;
     }
     
     this.end = function()
@@ -305,51 +337,62 @@ window.VoxelTool = function(scene)
     this.update = function()
     {    
         if(this.enabled)
-        {   
-            var vec = new THREE.Vector3(Math.floor(cursorPosition.x*2)/2+0.25, Math.floor(cursorPosition.y*2)/2+0.25, Math.floor(cursorPosition.z*2)/2+0.25);
+        {  
+            var indice =  Math.floor(this.cursor.position.x*2 + gridSize.x/2) * gridSize.y * gridSize.z
+                        + Math.floor(this.cursor.position.y*2) * gridSize.z
+                        + Math.floor(this.cursor.position.z*2 + gridSize.z/2);
 
-            for(var i = 0; i < 12; ++i)
-            {            
-                this.lines[i].geometry.vertices[0].set( this.geom.vertices[2*i].x + vec.x, 
-                                                        this.geom.vertices[2*i].y + vec.y, 
-                                                        this.geom.vertices[2*i].z + vec.z);
-                this.lines[i].geometry.vertices[1].set( this.geom.vertices[2*i+1].x + vec.x, 
-                                                        this.geom.vertices[2*i+1].y + vec.y, 
-                                                        this.geom.vertices[2*i+1].z + vec.z);
-                 this.lines[i].geometry.verticesNeedUpdate = true;
-            }
+            if(indice != this.startIndice)
+            {
+                this.startIndice = indice;            
 
-            for(var i = 12; i < 16; ++i)
-            {            
-                this.lines[i].geometry.vertices[0].set( this.geom.vertices[2*i].x, 
-                                                        this.geom.vertices[2*i].y + vec.y, 
-                                                        this.geom.vertices[2*i].z + vec.z);
-                this.lines[i].geometry.vertices[1].set( this.geom.vertices[2*i+1].x, 
-                                                        this.geom.vertices[2*i+1].y + vec.y, 
-                                                        this.geom.vertices[2*i+1].z + vec.z);
-                 this.lines[i].geometry.verticesNeedUpdate = true;
-            }
+                var vec = new THREE.Vector3(Math.floor(this.cursor.position.x*2)/2+0.25, 
+                                            Math.floor(this.cursor.position.y*2)/2+0.25, 
+                                            Math.floor(this.cursor.position.z*2)/2+0.25);
 
-            for(var i = 16; i < 20; ++i)
-            {            
-                this.lines[i].geometry.vertices[0].set( this.geom.vertices[2*i].x + vec.x, 
-                                                        this.geom.vertices[2*i].y + vec.y, 
-                                                        this.geom.vertices[2*i].z);
-                this.lines[i].geometry.vertices[1].set( this.geom.vertices[2*i+1].x + vec.x, 
-                                                        this.geom.vertices[2*i+1].y + vec.y, 
-                                                        this.geom.vertices[2*i+1].z);
-                 this.lines[i].geometry.verticesNeedUpdate = true;
-            }
+                for(var i = 0; i < 12; ++i)
+                {            
+                    this.lines[i].geometry.vertices[0].set( this.geom.vertices[2*i].x + vec.x, 
+                                                            this.geom.vertices[2*i].y + vec.y, 
+                                                            this.geom.vertices[2*i].z + vec.z);
+                    this.lines[i].geometry.vertices[1].set( this.geom.vertices[2*i+1].x + vec.x, 
+                                                            this.geom.vertices[2*i+1].y + vec.y, 
+                                                            this.geom.vertices[2*i+1].z + vec.z);                
+                    this.lines[i].geometry.verticesNeedUpdate = true;
+                }
 
-            for(var i = 20; i < 28; ++i)
-            {            
-                this.lines[i].geometry.vertices[0].set( this.geom.vertices[2*i].x + vec.x, 
-                                                        this.geom.vertices[2*i].y, 
-                                                        this.geom.vertices[2*i].z + vec.z);
-                this.lines[i].geometry.vertices[1].set( this.geom.vertices[2*i+1].x + vec.x, 
-                                                        this.geom.vertices[2*i+1].y, 
-                                                        this.geom.vertices[2*i+1].z + vec.z);
-                 this.lines[i].geometry.verticesNeedUpdate = true;
+                for(var i = 12; i < 16; ++i)
+                {            
+                    this.lines[i].geometry.vertices[0].set( this.geom.vertices[2*i].x, 
+                                                            this.geom.vertices[2*i].y + vec.y, 
+                                                            this.geom.vertices[2*i].z + vec.z);
+                    this.lines[i].geometry.vertices[1].set( this.geom.vertices[2*i+1].x, 
+                                                            this.geom.vertices[2*i+1].y + vec.y, 
+                                                            this.geom.vertices[2*i+1].z + vec.z);                
+                    this.lines[i].geometry.verticesNeedUpdate = true;                    
+                }
+
+                for(var i = 16; i < 20; ++i)
+                {            
+                    this.lines[i].geometry.vertices[0].set( this.geom.vertices[2*i].x + vec.x, 
+                                                            this.geom.vertices[2*i].y + vec.y, 
+                                                            this.geom.vertices[2*i].z);
+                    this.lines[i].geometry.vertices[1].set( this.geom.vertices[2*i+1].x + vec.x, 
+                                                            this.geom.vertices[2*i+1].y + vec.y, 
+                                                            this.geom.vertices[2*i+1].z);                
+                    this.lines[i].geometry.verticesNeedUpdate = true;
+                }
+
+                for(var i = 20; i < 28; ++i)
+                {            
+                    this.lines[i].geometry.vertices[0].set( this.geom.vertices[2*i].x + vec.x, 
+                                                            this.geom.vertices[2*i].y, 
+                                                            this.geom.vertices[2*i].z + vec.z);
+                    this.lines[i].geometry.vertices[1].set( this.geom.vertices[2*i+1].x + vec.x, 
+                                                            this.geom.vertices[2*i+1].y, 
+                                                            this.geom.vertices[2*i+1].z + vec.z);                
+                    this.lines[i].geometry.verticesNeedUpdate = true;
+                }
             }
         }
     }

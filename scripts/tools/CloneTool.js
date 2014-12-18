@@ -7,10 +7,16 @@ window.CloneTool = function(scene)
     this.begin = function()
     {
         this.enabled = true;
-        this.newObject = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), new THREE.MeshLambertMaterial({color : 0x00ff00}));
+        this.newObject = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), new THREE.MeshLambertMaterial({color : 0x00ff00}));
         scene.add(this.newObject);
         this.newObject.position.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
         this.newObject.updateMatrix();
+        
+        // Undo creation
+        historyManager.register(function(scene, obj) { return function()
+        {
+            scene.remove(obj);
+        }}(scene, this.newObject));
     }
     
     this.end = function()

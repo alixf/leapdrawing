@@ -12,46 +12,67 @@ window.onload = function()
     skydome = new Skydome(THREE.ImageUtils.loadTexture('assets/skydome.jpg'));
     scene.add(skydome);
 
-    var uniforms = { r : { type: 'f', value: 1. },
-				 g : { type: 'f', value: 1. },
-				 b : { type: 'f', value: 1. },
-				alpha : {type: 'f', value: 0.5 } };
-    var material = new THREE.ShaderMaterial( {
-	                transparent: true,
-			uniforms: uniforms,
-			vertexShader:   getFileContent("shaders/cursor.vert"),
-                        fragmentShader: getFileContent("shaders/cursor.frag")
-                	});
-    var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.1, 32, 32), material);
+    var material = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
+    var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
+
     scene.add(cursor);
 
-    camera.position.z += 10;
     camera.position.y += 5;
+    camera.position.z += 10;
+    camera.lookAt(new THREE.Vector3(0,0,0));
     var initialCamQuaternion = new THREE.Quaternion();
     initialCamQuaternion.copy(camera.quaternion);
 
+    gridSize = {x:40, y:20, z:40}
     var gridHelper = new THREE.GridHelper(10, 0.5);
     scene.add(gridHelper);
     scene.add(new THREE.AxisHelper(1.5));
 
     var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 1, 0xFFFF00);
-    scene.add(yArrow);    
+    scene.add(yArrow);        
 
     fingerPosition = {x : 0, y : 0, z : 0};
     cursorPosition = {x : 0, y : 0, z : 0};
     canMoveCursor = true;
+    voxelMode = false;
+    grid3D = [];
     
     var tools = [];
+    
+    
+    var HistoryManager = function()
+    {
+        this.commands = [];
+        this.undo = function()
+        {
+            var command = this.commands.pop();
+            if(command != null)
+                command();
+        };
+        this.register = function(command)
+        {
+            this.commands.push(command);
+        }
+    }
+    historyManager = new HistoryManager();
     
     // Tools
     var cloneTool = new CloneTool(scene);
     input.register(cloneTool, "A".charCodeAt(0));
     tools.push(cloneTool);
 
-    var voxelTool = new VoxelTool(scene);
+    var voxelTool = new VoxelTool(scene, cursor, yArrow);
     input.register(voxelTool, "V".charCodeAt(0));
     voxelTool.init();
     tools.push(voxelTool);
+    
+    var cubeTool = new CubeTool(scene);
+    input.register(cubeTool, "B".charCodeAt(0));
+    tools.push(cubeTool);
+    
+    var splineTool = new SplineTool(scene);
+    input.register(splineTool, "S".charCodeAt(0));
+    tools.push(splineTool);
     
     var cameraTool = new CameraTool(camera);
     input.register(cameraTool, "C".charCodeAt(0));
@@ -93,7 +114,7 @@ window.onload = function()
         cursorPosition = new THREE.Vector3(fingerPosition.x, fingerPosition.y, fingerPosition.z);
         camera.lookAt(new THREE.Vector3(0,camera.position.y,0));
         cursorPosition.applyQuaternion(camera.quaternion);
-        camera.lookAt(new THREE.Vector3(0,0,0));
+        camera.lookAt(new THREE.Vector3(cursorPosition.x,cursorPosition.y,cursorPosition.z));
         
         if(canMoveCursor)
         {
@@ -107,14 +128,42 @@ window.onload = function()
         renderer.render(scene, camera);
     };
     
+    var doingGesture = false;
     var output = document.getElementById('output');
-    Leap.loop(function(frame)
+    var controller = Leap.loop({enableGestures: true}, function(frame)
     {
-        if(frame.hands.length > 0)
+        if(frame.valid)
         {
-            var indexPosition = frame.hands[0].indexFinger.tipPosition;
-            var finger = {x:indexPosition[0]/25, y:indexPosition[1]/50, z:indexPosition[2]/25};
-            window.fingerPosition = finger;
+            if(frame.hands.length > 0)
+            {
+                var indexPosition = frame.hands[0].indexFinger.tipPosition;
+                var finger = {x:indexPosition[0]/25, y:indexPosition[1]/50, z:indexPosition[2]/25};
+                window.fingerPosition = finger;
+            }
+            if(frame.gestures.length > 0)
+            {
+                frame.gestures.forEach(function(gesture)
+                {
+                    switch (gesture.type)
+                    {
+                    case "swipe":
+                            
+                        if(!doingGesture)
+                        {
+                            doingGesture = true;
+                            if(gesture.direction[0] < 0) // Left swipe
+                            {
+                                historyManager.undo();
+                            }
+                        }
+                        break;
+                    }
+                });
+            }
+            else if(doingGesture)
+            {
+                doingGesture = false;
+            }
         }
     });
 
