@@ -14,6 +14,7 @@ window.onload = function()
 
     var material = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
     var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
+
     scene.add(cursor);
 
     camera.position.y += 5;
@@ -22,6 +23,7 @@ window.onload = function()
     var initialCamQuaternion = new THREE.Quaternion();
     initialCamQuaternion.copy(camera.quaternion);
 
+    gridSize = {x:40, y:20, z:40}
     var gridHelper = new THREE.GridHelper(10, 0.5);
     scene.add(gridHelper);
     scene.add(new THREE.AxisHelper(1.5));
@@ -36,6 +38,8 @@ window.onload = function()
     fingerPosition = {x : 0, y : 0, z : 0};
     cursorPosition = {x : 0, y : 0, z : 0};
     canMoveCursor = true;
+    voxelMode = false;
+    grid3D = [];
     
     var tools = [];
     
@@ -61,6 +65,11 @@ window.onload = function()
     var cloneTool = new CloneTool(scene);
     input.register(cloneTool, "A".charCodeAt(0));
     tools.push(cloneTool);
+
+    var voxelTool = new VoxelTool(scene, cursor, yArrow);
+    input.register(voxelTool, "V".charCodeAt(0));
+    voxelTool.init();
+    tools.push(voxelTool);
     
     var cubeTool = new CubeTool(scene);
     input.register(cubeTool, "B".charCodeAt(0));
@@ -79,7 +88,7 @@ window.onload = function()
     tools.push(lightTool);
 
     var colorPlane = new ColorPlane();
-    scene.add(colorPlane);
+    scene.add(colorPlane);    
     var colorTool = new ColorTool(scene, cursor, camera, initialCamQuaternion, colorPlane);
     input.register(colorTool, "P".charCodeAt(0));
     tools.push(colorTool);
@@ -114,7 +123,7 @@ window.onload = function()
         cursorPosition = new THREE.Vector3(fingerPosition.x, fingerPosition.y, fingerPosition.z);
         camera.lookAt(new THREE.Vector3(0,camera.position.y,0));
         cursorPosition.applyQuaternion(camera.quaternion);
-        camera.lookAt(new THREE.Vector3(0,0,0));
+        camera.lookAt(new THREE.Vector3(cursorPosition.x,cursorPosition.y,cursorPosition.z));
         
         if(canMoveCursor)
         {

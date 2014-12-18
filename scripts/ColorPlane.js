@@ -16,6 +16,7 @@ window.ColorPlane = function()
                 	});
     plane_color = new THREE.Mesh(geometry, material);                             
     plane_color.renderDepth = 1000.0;
+    plane_color.position.set(0,0, -1000);
     return plane_color;
 
    
