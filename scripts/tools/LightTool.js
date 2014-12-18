@@ -64,6 +64,7 @@ window.LightTool = function(scene)
         }
         else
         {
+            var vec = new THREE.Vector3();
             for(var i = 0; i < this.lightList.length; ++i)
             {
                 vec.subVectors(this.lightList[i].position, cursorPosition);

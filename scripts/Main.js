@@ -33,13 +33,14 @@ window.onload = function()
 
     //var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
     //var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
-    var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
+    //var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
 
     fingerPosition = {x : 0, y : 0, z : 0};
     cursorPosition = {x : 0, y : 0, z : 0};
     canMoveCursor = true;
     voxelMode = false;
     grid3D = [];
+    mainColor = new THREE.Color(0xff0000);
     
     var tools = [];
     
@@ -123,7 +124,7 @@ window.onload = function()
         cursorPosition = new THREE.Vector3(fingerPosition.x, fingerPosition.y, fingerPosition.z);
         camera.lookAt(new THREE.Vector3(0,camera.position.y,0));
         cursorPosition.applyQuaternion(camera.quaternion);
-        camera.lookAt(new THREE.Vector3(cursorPosition.x,cursorPosition.y,cursorPosition.z));
+        camera.lookAt(new THREE.Vector3(0,0,0));
         
         if(canMoveCursor)
         {
