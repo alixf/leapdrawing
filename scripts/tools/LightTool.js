@@ -12,7 +12,7 @@ window.LightTool = function(scene)
     this.begin = function()
     {
         this.enabled = true;
-        for(var i = 0; i < this.lightList.length; i++)
+        for(var i = 0; i < this.lightList.length; ++i)
         {
             vec.subVectors(this.lightList[i].position, cursorPosition);
             if(vec.lengthSq() < 0.49)
@@ -38,7 +38,7 @@ window.LightTool = function(scene)
             // Update scene materials
             function updateChildren(o)
             {
-                for(var i = 0; i < o.children.length; i++)
+                for(var i = 0; i < o.children.length; ++i)
                 {
                     if(o.children[i].material != null)
                         o.children[i].material.needsUpdate = true;

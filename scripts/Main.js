@@ -22,7 +22,7 @@ window.onload = function()
 			vertexShader:   getFileContent("shaders/cursor.vert"),
                         fragmentShader: getFileContent("shaders/cursor.frag")
                 	});
-    var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
+    var cursor = new THREE.Mesh(new THREE.SphereGeometry(0.1, 32, 32), material);
     scene.add(cursor);
 
     camera.position.z += 10;
@@ -37,10 +37,6 @@ window.onload = function()
     var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), 1, 0xFFFF00);
     scene.add(yArrow);    
 
-    //var directionalLight2 = new THREE.DirectionalLight(0x777777, 1.0); directionalLight2.position.set(1, 0, 1); scene.add(directionalLight2);
-    //var directionalLight3 = new THREE.DirectionalLight(0x555555, 1.0); directionalLight3.position.set(1, 1, 0); scene.add(directionalLight3);
-    //var ambientLight = new THREE.AmbientLight( 0x333333 ); scene.add(ambientLight);
-
     fingerPosition = {x : 0, y : 0, z : 0};
     cursorPosition = {x : 0, y : 0, z : 0};
     canMoveCursor = true;
@@ -51,6 +47,11 @@ window.onload = function()
     var cloneTool = new CloneTool(scene);
     input.register(cloneTool, "A".charCodeAt(0));
     tools.push(cloneTool);
+
+    var voxelTool = new VoxelTool(scene);
+    input.register(voxelTool, "V".charCodeAt(0));
+    voxelTool.init();
+    tools.push(voxelTool);
     
     var cameraTool = new CameraTool(camera);
     input.register(cameraTool, "C".charCodeAt(0));
