@@ -111,6 +111,7 @@ window.ColorTool = function(scene, cursor, camera, initialCamQuaternion, colorPl
 		camera.position.set(this.camX, this.camY, this.camZ);
 	        colorPlane.material.uniforms.alpha.value = 0.;
 		cursor.material.opacity = 0.5;
+        mainColor.copy(cursor.material.color);
 		cursor.material.color.setRGB(1,1,1);
     }
         

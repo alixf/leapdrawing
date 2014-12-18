@@ -20,7 +20,7 @@ window.CameraTool = function(camera)
         if(this.enabled)
         {
             this.camera.position.set(fingerPosition.x*2, fingerPosition.y*2, fingerPosition.z*2);
-            //this.camera.lookAt(new THREE.Vector3(cursorPosition.x, cursorPosition.y, cursorPosition.z));
+            this.camera.lookAt(new THREE.Vector3(0,0,0));
         }
     }
 };

@@ -13,7 +13,8 @@ window.SplineTool = function(scene)
     {
         this.enabled = true;
         
-        var material = new THREE.MeshLambertMaterial({color : 0x00ff00, side : THREE.DoubleSide});
+        console.log(mainColor.r+";"+mainColor.g+";"+mainColor.b);
+        var material = new THREE.MeshLambertMaterial({color : mainColor.getHex(), side : THREE.DoubleSide});
                 
         this.posArray = [];
         this.lastPosition.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);

@@ -45,6 +45,7 @@ window.onload = function()
     canMoveCursor = true;
     voxelMode = false;
     grid3D = [];
+    mainColor = new THREE.Color(0xff0000);
     
     var tools = [];
     
@@ -168,7 +169,7 @@ window.onload = function()
         cursorPosition = new THREE.Vector3(fingerPosition.x, fingerPosition.y, fingerPosition.z);
         camera.lookAt(new THREE.Vector3(0,camera.position.y,0));
         cursorPosition.applyQuaternion(camera.quaternion);
-        camera.lookAt(new THREE.Vector3(cursorPosition.x,cursorPosition.y,cursorPosition.z));
+        camera.lookAt(new THREE.Vector3(0,0,0));
         
         if(canMoveCursor)
         {
