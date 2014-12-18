@@ -13,8 +13,9 @@ window.SplineTool = function(scene)
     {
         this.enabled = true;
         
-        var material = new THREE.MeshLambertMaterial({color : 0x00ff00});
+        var material = new THREE.MeshLambertMaterial({color : 0x00ff00, side : THREE.DoubleSide});
                 
+        this.posArray = [];
         this.lastPosition.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
         this.posArray.push(new THREE.Vector3(cursorPosition.x, cursorPosition.y, cursorPosition.z));
         this.curve = new THREE.SplineCurve3(this.posArray);
@@ -37,7 +38,7 @@ window.SplineTool = function(scene)
     {
         if(this.enabled)
         {
-            if(new THREE.Vector3(cursorPosition.x, cursorPosition.y, cursorPosition.z).distanceTo(this.lastPosition) > 1.0)
+            if(new THREE.Vector3(cursorPosition.x, cursorPosition.y, cursorPosition.z).distanceTo(this.lastPosition) > 0.5)
             {
                 this.lastPosition.set(cursorPosition.x, cursorPosition.y, cursorPosition.z);
                 this.posArray.push(new THREE.Vector3(cursorPosition.x, cursorPosition.y, cursorPosition.z));
