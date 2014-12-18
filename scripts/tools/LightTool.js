@@ -130,10 +130,6 @@ window.LightTool = function(scene)
         {
             if(voxelMode)
             {                
-                var vec = new THREE.Vector3(Math.floor(cursorPosition.x*2)/2+0.25, 
-                                            Math.floor(cursorPosition.y*2)/2+0.25, 
-                                            Math.floor(cursorPosition.z*2)/2+0.25);
-
                 var indice =  Math.floor(cursorPosition.x*2 + gridSize.x/2) * gridSize.y * gridSize.z
                             + Math.floor(cursorPosition.y*2) * gridSize.z
                             + Math.floor(cursorPosition.z*2 + gridSize.z/2);
@@ -142,6 +138,10 @@ window.LightTool = function(scene)
                 {
                     if(grid3D[indice] == null)
                     {
+                        var vec = new THREE.Vector3(Math.floor(cursorPosition.x*2)/2+0.25, 
+                                                    Math.floor(cursorPosition.y*2)/2+0.25, 
+                                                    Math.floor(cursorPosition.z*2)/2+0.25);
+
                         grid3D[indice] = grid3D[this.startIndice];
                         grid3D[this.startIndice] = null;
                         this.startIndice = indice;

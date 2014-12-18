@@ -20,10 +20,9 @@ window.ColorTool = function(scene, cursor, camera, initialCamQuaternion, colorPl
 	this.camZ = camera.position.z;
 	this.camQuaternion = camera.quaternion;
 	camera.position.set(0, 5, 10);
-	camera.position.applyQuaternion(initialCamQuaternion);
 		    
 	colorPlane.position.set(fingerPosition.x, fingerPosition.y, fingerPosition.z);
-	colorPlane.position.applyQuaternion(initialCamQuaternion);
+	//colorPlane.position.applyQuaternion(initialCamQuaternion);
         initialDepth = fingerPosition.z;
 	initialV = 0.5;
 	colorPlane.material.uniforms.V.value = initialV;
@@ -35,7 +34,7 @@ window.ColorTool = function(scene, cursor, camera, initialCamQuaternion, colorPl
         if(this.enabled)
         {			   
 	    colorPlane.position.set(colorPlane.position.x , colorPlane.position.y, cursor.position.z);
-	    colorPlane.position.applyQuaternion(initialCamQuaternion);
+	    
 	    depthVariation = initialDepth - cursor.position.z;
             if (depthVariation < 0.)
 	    {   	
